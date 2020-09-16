@@ -1,6 +1,5 @@
 #include <pm2008_i2c.h>
 #include <WiFi.h>
-#include <WiFiClient.h>
 #include <ArduinoJson.h> //Json 사용을 위한 라이브러리 
 #include <HTTPClient.h>  //HTTP 전송을 위한 라이브러리
 
@@ -9,7 +8,6 @@ PM2008_I2C pm2008_i2c;
 char ssid[] = "KT_GiGA_2G_Wave2_1123";          // your network SSID (name)
 char pass[] = "ke77ff4984";                     // your network password
 
-WiFiClient client;
 HTTPClient http;  
 
 void setup() {
@@ -58,6 +56,7 @@ void loop() {
      String requestBody;
      serializeJson(root, requestBody);
      Serial.println(requestBody); 
+     postDataToServer(requestBody);
 
     
 //    Serial.print("PM 1.0 (TSI) : ");
@@ -80,4 +79,17 @@ void loop() {
 //    Serial.println(pm2008_i2c.number_of_10_um);
   }
   delay(1000);
+}
+
+void postDataToServer(String requestBody){
+          Serial.println("Posting JSON data to Node-RED...");
+          http.begin("http://172.30.1.47:1880/data");  
+          http.addHeader("Content-Type", "application/json; charset = utf-8");
+          int httpResponseCode = http.POST(requestBody);  //POST형식으로 
+         if(httpResponseCode>0){ 
+                String response = http.getString();                    
+                Serial.println(response);
+        }else{ 
+                Serial.printf("Error");     
+         }
 }
