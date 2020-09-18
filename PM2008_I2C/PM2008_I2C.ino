@@ -49,9 +49,9 @@ void loop() {
      JsonObject root = doc.to<JsonObject>();
      root["Type"] = "PM2008-GRIMM";
      JsonObject value = root.createNestedObject("value");
-     value["PM 1.0"] = pm2008_i2c.pm1p0_grimm;
-     value["PM 2.0"] = pm2008_i2c.pm2p5_grimm;
-     value["PM 10.0"] = pm2008_i2c.pm10_grimm;
+     value["PM1"] = pm2008_i2c.pm1p0_grimm;
+     value["PM2"] = pm2008_i2c.pm2p5_grimm;
+     value["PM10"] = pm2008_i2c.pm10_grimm;
      
      String requestBody;
      serializeJson(root, requestBody);
@@ -83,7 +83,7 @@ void loop() {
 
 void postDataToServer(String requestBody){
           Serial.println("Posting JSON data to Node-RED...");
-          http.begin("http://172.30.1.47:1880/data");  
+          http.begin("http://172.30.1.53:1880/data");  
           http.addHeader("Content-Type", "application/json; charset = utf-8");
           int httpResponseCode = http.POST(requestBody);  //POST형식으로 
          if(httpResponseCode>0){ 
